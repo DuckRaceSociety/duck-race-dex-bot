@@ -227,7 +227,7 @@ async function handleWallet(chatId, userId, walletAddr) {
         inline_keyboard: [
           [
             { text: "0.1 SOL", callback_data: "sol_0.1" },
-            { text: "0.5 SOL", callback_data: "sol_0.5" },
+            { text: "0.25 SOL", callback_data: "sol_0.25" },
             { text: "1 SOL", callback_data: "sol_1" },
           ],
           [
@@ -428,7 +428,7 @@ async function handleCallback(query) {
           inline_keyboard: [
             [
               { text: "0.1 SOL", callback_data: "sol_0.1" },
-              { text: "0.5 SOL", callback_data: "sol_0.5" },
+              { text: "0.25 SOL", callback_data: "sol_0.25" },
               { text: "1 SOL", callback_data: "sol_1" },
             ],
             [
