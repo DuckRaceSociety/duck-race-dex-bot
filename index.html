@@ -866,7 +866,7 @@ async function executeSwap() {
   showStatus("loading", `<span class="spinner"></span> Confirm in Phantom...`);
 
   try {
-    const lamports = Math.round(sol * solanaWeb3.LAMPORTS_PER_SOL);
+   const lamports = Number(Math.round(sol * 1000000000));
     const connection = new solanaWeb3.Connection(RPC_URL, "confirmed");
     const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
 
