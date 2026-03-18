@@ -839,48 +839,36 @@ async function executeSwap() {
 
   const trcAmount = sol * TOKEN_RATE;
   document.getElementById("swap-btn").disabled = true;
-
-  showStatus("loading", `<span class="spinner"></span> Waiting for wallet signature...`);
+  showStatus("loading", `<span class="spinner"></span> Confirm in Phantom...`);
 
   try {
     const lamports = Math.floor(sol * 1000000000);
-    const fromPubkey = walletAddress;
-    const toPubkey = TREASURY_ADDR;
-
-    // Use Phantom's native sendTransaction which handles Buffer internally
     const connection = new solanaWeb3.Connection(RPC_URL, "confirmed");
     const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
 
-    const transferInstruction = solanaWeb3.SystemProgram.transfer({
-      fromPubkey: new solanaWeb3.PublicKey(fromPubkey),
-      toPubkey: new solanaWeb3.PublicKey(toPubkey),
-      lamports,
-    });
-
-    const message = new solanaWeb3.TransactionMessage({
-      payerKey: new solanaWeb3.PublicKey(fromPubkey),
+    const tx = new solanaWeb3.Transaction({
       recentBlockhash: blockhash,
-      instructions: [transferInstruction],
-    }).compileToV0Message();
+      feePayer: new solanaWeb3.PublicKey(walletAddress),
+    }).add(
+      solanaWeb3.SystemProgram.transfer({
+        fromPubkey: new solanaWeb3.PublicKey(walletAddress),
+        toPubkey: new solanaWeb3.PublicKey(TREASURY_ADDR),
+        lamports,
+      })
+    );
 
-    const transaction = new solanaWeb3.VersionedTransaction(message);
+    // Use Phantom signAndSendTransaction directly
+    const result = await window.solana.signAndSendTransaction(tx);
+    const sig = result.signature;
 
-    showStatus("loading", `<span class="spinner"></span> Confirm in Phantom...`);
-
-    const sig = await provider.request({
-      method: "signAndSendTransaction",
-      params: { message: transaction },
-    });
-
-    showStatus("loading", `<span class="spinner"></span> Confirming... Sending ${trcAmount.toLocaleString()} TRC...`);
+    showStatus("loading", `<span class="spinner"></span> Confirmed! Sending ${trcAmount.toLocaleString()} TRC...`);
 
     await connection.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight }, "confirmed");
-
     await notifyBackend(sig, walletAddress, sol, trcAmount);
 
     showStatus("success",
       `✅ Swap Successful!<br><br>` +
-      `<strong>${trcAmount.toLocaleString()} TRC</strong> sent to your wallet!<br><br>` +
+      `<strong>${trcAmount.toLocaleString()} TRC</strong> sent!<br><br>` +
       `<a class="tx-link" href="${EXPLORER}/tx/${sig}" target="_blank">🔍 ${sig.slice(0,16)}...${sig.slice(-8)}</a>`
     );
 
