@@ -402,7 +402,7 @@ async function handleCallback(query) {
   }
 
   if (data === "rate_info") {
-    const solPrice = await getSolPrice();
+    const solPrice = 93.81;
     const treasuryBal = await getTreasuryBalance();
     await sendMessage(chatId,
       `📊 <b>Kurs & Token Info</b>\n\n` +
