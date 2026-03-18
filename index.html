@@ -1,6 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+  window.global = window;
+  window.process = { env: {} };
+  window.Buffer = window.Buffer || (function() {
+    return {
+      from: function(str, enc) {
+        if (enc === 'base64') {
+          var str2 = str.replace(/[^A-Za-z0-9+/=]/g,'');
+          var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+          var out=[], i=0;
+          while(i<str2.length) {
+            var c1=chars.indexOf(str2[i++]),c2=chars.indexOf(str2[i++]);
+            var c3=chars.indexOf(str2[i++]),c4=chars.indexOf(str2[i++]);
+            out.push((c1<<2)|(c2>>4),(((c2&15)<<4)|(c3>>2)),(((c3&3)<<6)|c4));
+          }
+          return new Uint8Array(out);
+        }
+        return new TextEncoder().encode(str);
+      },
+      alloc: function(size) { return new Uint8Array(size); },
+      isBuffer: function() { return false; }
+    };
+  })();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Duck Race Society — DEX</title>
