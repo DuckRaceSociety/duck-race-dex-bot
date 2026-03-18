@@ -164,12 +164,29 @@ async function getTreasuryBalance() {
 // /start command
 async function handleStart(chatId, userId, firstName) {
   const sess = getSession(userId);
-  sess.step = "await_wallet";
-  sess.wallet = null;
-  sess.solAmount = null;
+  sess.step = "idle";
 
   const treasuryBal = await getTreasuryBalance();
   const solPrice = await getSolPrice();
+
+  await sendMessage(chatId,
+    `🦆 <b>DUCK RACE SOCIETY — DEX</b>\n\n` +
+    `💱 Swap SOL → TRC\n\n` +
+    `📊 <b>Rate:</b> 1 SOL = <b>25,000 TRC</b>\n` +
+    `💰 <b>SOL:</b> $${solPrice.toFixed(2)}\n` +
+    `🏦 <b>Treasury:</b> ${treasuryBal.toLocaleString()} TRC\n\n` +
+    `👇 Öffne das DEX Interface:`,
+    {
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "💱 DEX Interface öffnen", url: "https://duck-race-dex-bot.vercel.app" }],
+          [{ text: "🎮 Duck Race spielen", url: "https://duck-race-society.vercel.app" }],
+          [{ text: "📊 Kurs & Info", callback_data: "rate_info" }]
+        ]
+      }
+    }
+  );
+}
 
   await sendMessage(chatId,
     `🦆 <b>DUCK RACE SOCIETY — DEX BOT</b>\n\n` +
