@@ -702,18 +702,27 @@ async function fetchSolPrice() {
 // ── TREASURY BALANCE ──
 async function fetchTreasuryBalance() {
   try {
-    const conn = new solanaWeb3.Connection(RPC_URL);
-    const mint = new solanaWeb3.PublicKey(TOKEN_MINT);
-    const treasury = new solanaWeb3.PublicKey(TREASURY_ADDR);
-    const accs = await conn.getParsedTokenAccountsByOwner(treasury, { mint });
-    const bal = accs.value[0]?.account?.data?.parsed?.info?.tokenAmount?.uiAmount || 500000000;
+    const res = await fetch("https://api.mainnet-beta.solana.com", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0", id: 1,
+        method: "getTokenAccountsByOwner",
+        params: [
+          "5sDfMWBNFMne13aJLhiG3k7V8MwULmHfQrkt2eHupSQ1",
+          { mint: "H4FTTQ5nhGdFFqHa3FPd5TpjcXYLAokN8SYFdBq4yERL" },
+          { encoding: "jsonParsed" }
+        ]
+      })
+    });
+    const data = await res.json();
+    const bal = data?.result?.value?.[0]?.account?.data?.parsed?.info?.tokenAmount?.uiAmount || 500000000;
     const fmt = bal >= 1000000 ? (bal/1000000).toFixed(0)+"M" : bal.toLocaleString();
     document.getElementById("treasury-bal").textContent = fmt + " TRC";
   } catch {
     document.getElementById("treasury-bal").textContent = "500M TRC";
   }
 }
-
 // ── CALCULATE TRC ──
 function calcTRC() {
   const sol = parseFloat(document.getElementById("sol-input").value) || 0;
