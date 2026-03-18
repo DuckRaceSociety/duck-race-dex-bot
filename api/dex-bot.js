@@ -188,26 +188,6 @@ async function handleStart(chatId, userId, firstName) {
   );
 }
 
-  await sendMessage(chatId,
-    `🦆 <b>DUCK RACE SOCIETY — DEX BOT</b>\n\n` +
-    `💱 Swap SOL → TRC direkt hier im Chat!\n\n` +
-    `📊 <b>Rate:</b> 1 SOL = <b>${TOKEN_RATE.toLocaleString()} TRC</b>\n` +
-    `💰 <b>SOL Preis:</b> $${solPrice.toFixed(2)}\n` +
-    `🏦 <b>Treasury:</b> ${treasuryBal.toLocaleString()} TRC verfügbar\n` +
-    `📏 <b>Min:</b> ${MIN_SOL} SOL | <b>Max:</b> ${MAX_SOL} SOL\n\n` +
-    `━━━━━━━━━━━━━━━━━━━━━\n` +
-    `👇 <b>Sende deine Solana Wallet Adresse:</b>`,
-    {
-      reply_markup: {
-        inline_keyboard: [[
-          { text: "ℹ️ Wie funktioniert's?", callback_data: "how_it_works" },
-          { text: "📊 Kurs & Info", callback_data: "rate_info" }
-        ]]
-      }
-    }
-  );
-}
-
 // Wallet received
 async function handleWallet(chatId, userId, walletAddr) {
   const sess = getSession(userId);
