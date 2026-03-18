@@ -872,8 +872,8 @@ async function executeSwap() {
       `<span class="spinner"></span> Waiting for wallet signature...`
     );
 
-    const signed = await provider.signTransaction(transaction);
-    const sig = await conn.sendRawTransaction(signed.serialize());
+  const { signature } = await provider.signAndSendTransaction(transaction);
+  const sig = signature;
 
     showStatus("loading",
       `<span class="spinner"></span> Transaction confirmed... Sending ${trcAmount.toLocaleString()} TRC to your wallet...`
