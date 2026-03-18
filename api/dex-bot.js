@@ -15,7 +15,7 @@ const TOKEN_MINT       = process.env.TOKEN_MINT || "H4FTTQ5nhGdFFqHa3FPd5TpjcXYL
 const TOKEN_RATE       = parseFloat(process.env.TOKEN_RATE || "25000"); // TRC per SOL
 const MIN_SOL          = parseFloat(process.env.MIN_SOL || "0.5");
 const MAX_SOL          = parseFloat(process.env.MAX_SOL || "10");
-const RPC_URL          = process.env.RPC_URL || "https://rpc.ankr.com/solana";
+const RPC_URL = "https://api.mainnet-beta.solana.com";
 const EXPLORER         = "https://solscan.io";
 
 const TG = `https://api.telegram.org/bot${BOT_TOKEN}`;
