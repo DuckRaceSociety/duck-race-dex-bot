@@ -134,11 +134,9 @@ async function transferTokens(toWalletAddr, tokenAmount) {
 async function getTreasuryBalance() {
   try {
     const conn = new Connection(RPC_URL, "confirmed");
-    const secretKey = bs58.decode(TREASURY_PRIVKEY);
-    const treasury = Keypair.fromSecretKey(secretKey);
     const mint = new PublicKey(TOKEN_MINT);
-
-    const tokenAccounts = await conn.getParsedTokenAccountsByOwner(treasury.publicKey, { mint });
+    const treasury = new PublicKey(process.env.TREASURY_PUBLIC_KEY || "5sDfMWBNFMne13aJLhiG3k7V8MwULmHfQrkt2eHupSQ1");
+    const tokenAccounts = await conn.getParsedTokenAccountsByOwner(treasury, { mint });
     const bal = tokenAccounts.value[0]?.account?.data?.parsed?.info?.tokenAmount?.uiAmount || 0;
     return bal;
   } catch {
