@@ -59,13 +59,19 @@ async function answerCallback(callbackQueryId, text = "") {
 }
 
 // ── SOL PRICE (optional, for USD display) ──
-async function getSolPrice() {
+async function getTreasuryBalance() {
   try {
-    const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
-    const data = await res.json();
-    return data?.solana?.usd || 0;
-  } catch {
-    return 0;
+    const conn = new Connection(RPC_URL, "confirmed");
+    const mint = new PublicKey(TOKEN_MINT);
+    const treasuryAddr = process.env.TREASURY_PUBLIC_KEY || "5sDfMWBNFMne13aJLhiG3k7V8MwULmHfQrkt2eHupSQ1";
+    const treasury = new PublicKey(treasuryAddr);
+    const tokenAccounts = await conn.getParsedTokenAccountsByOwner(treasury, { mint });
+    if (!tokenAccounts.value.length) return 500000000;
+    const bal = tokenAccounts.value[0]?.account?.data?.parsed?.info?.tokenAmount?.uiAmount || 500000000;
+    return bal;
+  } catch (e) {
+    console.error("Treasury balance error:", e.message);
+    return 500000000;
   }
 }
 
